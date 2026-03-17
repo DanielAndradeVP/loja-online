@@ -15,7 +15,7 @@ class CouponSeeder extends Seeder
             ['code' => 'BEMVINDO10'],
             [
                 'public_id' => (string) Str::uuid(),
-                'discount_type' => 'percentage',
+                'discount_type' => 'percent',
                 'discount_value' => 10,
                 'max_discount_amount' => 100,
                 'starts_at' => Carbon::now()->subDay(),
