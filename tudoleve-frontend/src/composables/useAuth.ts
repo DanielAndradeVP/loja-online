@@ -14,9 +14,15 @@ interface LoginResponseUser {
   email: string
 }
 
-interface LoginResponse {
+interface LoginResponseData {
   token: string
   user: LoginResponseUser
+}
+
+interface ApiResponse<T> {
+  success: boolean
+  data: T
+  meta?: Record<string, unknown>
 }
 
 export const useAuth = () => {
@@ -61,8 +67,10 @@ export const useAuth = () => {
 
       authStore.setUser(user)
       authStore.setAuthenticated(true)
-    } catch {
-      authStore.reset()
+    } catch (error: any) {
+      if (error?.statusCode === 401) {
+        authStore.reset()
+      }
     } finally {
       authStore.setLoading(false)
     }
@@ -89,10 +97,16 @@ export const useAuth = () => {
     }
 
     try {
-      const response = await http.post<LoginResponse>('/auth/login', credentials)
+      const response = await http.post<ApiResponse<LoginResponseData>>('/auth/login', {
+        email: credentials.identifier,
+        password: credentials.password,
+      })
 
-      saveToken(response.token)
-      authStore.setUser(response.user)
+      const token = response.data.token
+      const user = response.data.user
+
+      saveToken(token)
+      authStore.setUser(user)
       authStore.setAuthenticated(true)
 
       await router.push('/admin')

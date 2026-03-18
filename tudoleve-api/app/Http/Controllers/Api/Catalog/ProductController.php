@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api\Catalog;
 
 use App\Domain\Catalog\Services\ProductCatalogService;
 use App\Http\Controllers\Api\ApiController;
+use App\Models\Product;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ProductController extends ApiController
@@ -36,6 +38,28 @@ class ProductController extends ApiController
         $product = $this->catalogService->getByPublicId($publicId);
 
         return $this->success($product);
+    }
+
+    public function featured()
+    {
+        $products = $this->catalogService->listFeatured(8);
+
+        $data = $products->map(function (Product $product): array {
+            $primaryImage = $product->images
+                ->sortByDesc('is_primary')
+                ->sortBy('position')
+                ->first();
+
+            return [
+                'id' => $product->id,
+                'slug' => $product->slug,
+                'name' => $product->name,
+                'price' => (float) ($product->promotional_price ?? $product->price),
+                'image' => $primaryImage?->url,
+            ];
+        })->values();
+
+        return $this->success($data);
     }
 }
 

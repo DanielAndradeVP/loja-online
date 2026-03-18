@@ -23,7 +23,6 @@ const createHttpClient = () => {
 
   const instance = ofetch.create({
     baseURL,
-    credentials: 'include',
     onRequest({ options }) {
       const headers = new Headers(options.headers as HeadersInit)
 

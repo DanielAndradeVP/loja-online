@@ -8,12 +8,27 @@ const { formatCurrencyBRL } = useFormatters()
 
 const featured = ref<ProductPublicSummary[]>([])
 const loadingFeatured = ref(true)
+const errorFeatured = ref<string | null>(null)
 
-onMounted(async () => {
-  const { data } = await api.get<ProductPublicSummary[]>('/public/products/featured', { softError: true })
+async function loadFeatured() {
+  loadingFeatured.value = true
+  errorFeatured.value = null
+
+  const { data, success, message } = await api.get<ProductPublicSummary[]>(
+    '/catalog/products/featured',
+    { softError: true }
+  )
+
   loadingFeatured.value = false
-  if (data) featured.value = data
-})
+
+  if (success && data) {
+    featured.value = data
+  } else {
+    errorFeatured.value = message ?? 'Não foi possível carregar os produtos em destaque.'
+  }
+}
+
+onMounted(loadFeatured)
 </script>
 
 <template>
@@ -108,6 +123,28 @@ onMounted(async () => {
           <div class="h-4 w-3/4 rounded bg-slate-200 animate-pulse" />
           <div class="h-3 w-1/2 rounded bg-slate-200 animate-pulse" />
         </div>
+      </div>
+
+      <!-- Error state -->
+      <div
+        v-else-if="errorFeatured"
+        class="flex flex-col items-center gap-4 py-16 text-center"
+      >
+        <span class="text-5xl">⚠️</span>
+        <div class="space-y-1">
+          <p class="text-sm font-medium text-slate-700">
+            Não foi possível carregar os produtos
+          </p>
+          <p class="text-xs text-slate-400">
+            {{ errorFeatured }}
+          </p>
+        </div>
+        <button
+          class="text-xs text-emerald-600 underline underline-offset-2 hover:text-emerald-500 transition-colors"
+          @click="loadFeatured"
+        >
+          Tentar novamente
+        </button>
       </div>
 
       <!-- Products grid -->

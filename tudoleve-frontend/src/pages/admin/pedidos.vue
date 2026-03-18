@@ -1,18 +1,13 @@
 <script setup lang="ts">
+import PedidosListPage from '~/components/templates/Pedidos/PedidosListPage.vue'
+
 definePageMeta({
   layout: 'admin',
-  middleware: ['auth']
+  middleware: ['auth'],
 })
 </script>
 
 <template>
-  <section class="space-y-2">
-    <h2 class="text-xl font-semibold">
-      Pedidos
-    </h2>
-    <p class="text-sm text-slate-600 max-w-2xl">
-      Estrutura base para gestão de pedidos. Próximas etapas irão adicionar listagem, filtros e detalhes dos pedidos.
-    </p>
-  </section>
+  <PedidosListPage />
 </template>
 

@@ -4,6 +4,7 @@ namespace App\Repositories\Eloquent;
 
 use App\Models\Product;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class ProductRepository extends BaseRepository
 {
@@ -63,6 +64,19 @@ class ProductRepository extends BaseRepository
         }
 
         return $query->paginate($perPage);
+    }
+
+    public function featured(int $limit = 8): Collection
+    {
+        return $this->query()
+            ->with(['images' => function ($q): void {
+                $q->orderByDesc('is_primary')->orderBy('position');
+            }])
+            ->where('is_active', true)
+            ->orderByDesc('promotional_price')
+            ->orderByDesc('created_at')
+            ->limit($limit)
+            ->get();
     }
 }
 

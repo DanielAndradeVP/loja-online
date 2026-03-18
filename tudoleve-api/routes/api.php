@@ -61,6 +61,8 @@ Route::prefix('v1')
         Route::prefix('catalog')->group(function (): void {
             Route::get('products', [\App\Http\Controllers\Api\Catalog\ProductController::class, 'index'])
                 ->name('api.v1.catalog.products.index');
+            Route::get('products/featured', [\App\Http\Controllers\Api\Catalog\ProductController::class, 'featured'])
+                ->name('api.v1.catalog.products.featured');
             Route::get('products/{publicId}', [\App\Http\Controllers\Api\Catalog\ProductController::class, 'show'])
                 ->name('api.v1.catalog.products.show');
 
@@ -68,6 +70,11 @@ Route::prefix('v1')
                 ->name('api.v1.catalog.categories.index');
             Route::get('brands', [\App\Http\Controllers\Api\Catalog\BrandController::class, 'index'])
                 ->name('api.v1.catalog.brands.index');
+        });
+
+        Route::prefix('public')->group(function (): void {
+            Route::get('products/featured', [\App\Http\Controllers\Api\Catalog\ProductController::class, 'featured'])
+                ->name('api.v1.public.products.featured');
         });
 
         Route::get('shipping-methods', [\App\Http\Controllers\Api\Logistics\ShippingMethodController::class, 'index'])

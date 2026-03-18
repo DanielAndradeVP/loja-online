@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import AdminDashboardPage from '~/components/templates/Dashboard/AdminDashboardPage.vue'
+
 definePageMeta({
   layout: 'admin',
-  middleware: ['auth']
+  middleware: ['auth'],
 })
 </script>
 

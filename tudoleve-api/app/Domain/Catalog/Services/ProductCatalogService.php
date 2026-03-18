@@ -5,6 +5,7 @@ namespace App\Domain\Catalog\Services;
 use App\Models\Product;
 use App\Repositories\Eloquent\ProductRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class ProductCatalogService
 {
@@ -28,6 +29,11 @@ class ProductCatalogService
             ->firstOrFail();
 
         return $product;
+    }
+
+    public function listFeatured(int $limit = 8): Collection
+    {
+        return $this->products->featured($limit);
     }
 }
 
