@@ -19,7 +19,18 @@ const createHttpClient = () => {
   const authStore = useAuthStore()
   const router = useRouter()
 
-  const baseURL = config.public.apiBaseUrl as string
+  // On the SSR server: prefer the private internal URL (NUXT_API_BASE_URL)
+  // so Docker container-to-container calls go through the internal network.
+  // On the client (browser): always use the public URL (NUXT_PUBLIC_API_BASE_URL).
+  const baseURL = (import.meta.server && config.apiBaseUrl)
+    ? (config.apiBaseUrl as string)
+    : (config.public.apiBaseUrl as string)
+
+  if (!baseURL) {
+    throw new Error(
+      'NUXT_PUBLIC_API_BASE_URL nao esta configurado. Defina a variavel de ambiente para o base da API.'
+    )
+  }
 
   const instance = ofetch.create({
     baseURL,

@@ -10,8 +10,12 @@ export default defineNuxtConfig({
   },
   modules: ['@pinia/nuxt', '@nuxtjs/tailwindcss'],
   runtimeConfig: {
+    // Server-only: used by SSR inside Docker (env: NUXT_API_BASE_URL).
+    // Falls back to the public URL when not set (e.g. local dev without Docker).
+    apiBaseUrl: '',
     public: {
-      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL || 'http://127.0.0.1:8000/api/v1'
+      // Exposed to the browser (env: NUXT_PUBLIC_API_BASE_URL).
+      apiBaseUrl: ''
     }
   },
   app: {
